@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
 import java.time.Duration;
 
 public class BaseTest {
-    public static WebDriver driver = null;
+   public static WebDriver driver;
     public static ChromeOptions optionC;
     static WebDriverWait wait;
     static Actions actions;
@@ -71,7 +71,7 @@ public class BaseTest {
         WebElement submitButton = driver.findElement(By.cssSelector("button[type='submit']"));
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[type='submit']"))).click();
     }
-    //when
+
     public static void searchSong(String songTitle){
         WebElement searchBar = driver.findElement(By.cssSelector("input[type='search']"));
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("input[type='search']"))).sendKeys(songTitle);
@@ -107,6 +107,11 @@ public class BaseTest {
         WebElement playlistToDelete = driver.findElement(By.cssSelector("[href = '#!/playlist/54189']"));
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[href = '#!/playlist/54189']"))).click();
         //playlistToDelete.click();
+    }
+
+    public static void getUserAvatar(){
+        WebElement userAvatar = driver.findElement(By.cssSelector("#userBadge > a.view-profile > img"));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#userBadge > a.view-profile > img")));
     }
 
 
