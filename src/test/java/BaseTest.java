@@ -4,20 +4,20 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Parameters;
+import org.testng.annotations.*;
 
+import java.net.MalformedURLException;
 import java.time.Duration;
 
 public class BaseTest {
     public static WebDriver driver = null;
     public static ChromeOptions optionC;
     static WebDriverWait wait;
-
+    static Actions actions;
+    public static ThreadLocal<WebDriver> threadDriver;
     @BeforeSuite
     static void setupClass() {
         WebDriverManager.chromedriver().setup();
@@ -25,19 +25,38 @@ public class BaseTest {
 
     @BeforeMethod
     @Parameters({"baseURL"})
-    static void setupBrowser(String baseURL) {
-        optionC = new ChromeOptions();
-        optionC.addArguments("--disable-notifications", "--remote-allow-origins=*", "--incognito", "--start-maximized");
-        driver = new ChromeDriver(optionC);
+
+
+    static void launchBrowser(@Optional String baseURL) throws MalformedURLException {
+        baseURL="https://bbb.testpro.io/";
+        driver = pickBrowser(System.getProperty("browser"));
+        threadDriver = new ThreadLocal<>();
+        threadDriver.set(driver);
+
+        actions = new Actions(getDriver());
+        getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         wait = new WebDriverWait(driver, Duration.ofSeconds(4));
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.manage().window().minimize();
-        driver.get(baseURL);
+        url = baseURL;
+        getDriver().get(url);
+
+
+//        optionC = new ChromeOptions();
+//        optionC.addArguments("--disable-notifications", "--remote-allow-origins=*", "--incognito", "--start-maximized");
+//        driver = new ChromeDriver(optionC);
+//        wait = new WebDriverWait(driver, Duration.ofSeconds(4));
+//        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+//        driver.manage().window().minimize();
+//        driver.get(baseURL);
+    }
+
+    public static WebDriver getDriver() {
+        return threadDriver.get();
     }
 
     @AfterMethod
     public static void tearDownBrowser() {
-        driver.quit();
+        getDriver().quit();
+        threadDriver.remove();
     }
 
     public static void logIn(String email, String password) {
