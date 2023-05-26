@@ -4,7 +4,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
@@ -20,18 +22,34 @@ public class BaseTest {
     public static EdgeOptions optionE;
     static WebDriverWait wait;
     private static String browser;
-
-
     @BeforeSuite
     static void setupClass() {
+        
         WebDriverManager.edgedriver().setup();
+        driver = pickBrowser(System.getProperty("browser"));
+
     }
 
     @BeforeMethod
     @Parameters({"baseURL"})
+    public static WebDriver pickBrowser(String browser){
+       switch(browser){
+           case "Edge":
+               WebDriverManager.edgedriver().setup();
+               optionE = new EdgeOptions();
+               optionE.addArguments("--remote-allow-origins=*");
+               return driver = new EdgeDriver(optionE);
+           case "firefox":
+               WebDriverManager.firefoxdriver().setup();
+               return driver = new FirefoxDriver();
+           default "Chrome":
+               WebDriverManager.chromedriver().setup();
+               driver = new ChromeDriver(optionC);
+               optionC = new ChromeOptions();
+               optionC.addArguments("--disable-notifications", "--remote-allow-origins=*", "--incognito", "--start-maximized");
+               return driver = new ChromeDriver(optionC);
 
-    public static pickBrowser(String browser){
-        driver = pickBrowser(System.getProperty("browser"));
+       }
 
     static void setupBrowser(String baseURL) {
 
