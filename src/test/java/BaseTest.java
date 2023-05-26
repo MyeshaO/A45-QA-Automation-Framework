@@ -15,6 +15,7 @@ import java.time.Duration;
 public class BaseTest {
    public static WebDriver driver;
     public static ChromeOptions optionC;
+    static String url;
     static WebDriverWait wait;
     static Actions actions;
     public static ThreadLocal<WebDriver> threadDriver;
