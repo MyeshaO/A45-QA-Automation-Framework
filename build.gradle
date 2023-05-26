@@ -20,8 +20,9 @@ dependencies {
     implementation 'io.cucumber:cucumber-java:7.9.0'
 }
 
-test {
+ test {
     useTestNG() {
         suites "src/test/resources/TestNG.xml"
+        systemProperty "browser", System.getProperty("browser")
     }
 }

@@ -4,7 +4,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -20,29 +19,20 @@ public class BaseTest {
     public static ChromeOptions optionC;
     public static EdgeOptions optionE;
     static WebDriverWait wait;
+    private static String browser;
 
 
     @BeforeSuite
     static void setupClass() {
-
-
+        WebDriverManager.edgedriver().setup();
     }
 
     @BeforeMethod
     @Parameters({"baseURL"})
 
-    private static WebDriver pickBrowser(String browser){
+    public static pickBrowser(String browser){
         driver = pickBrowser(System.getProperty("browser"));
-        switch (browser){
-            case "Edge":
-                WebDriverManager.edgedriver().setup();
-                return driver = new EdgeDriver();
 
-            default:
-                WebDriverManager.chromedriver().setup();
-                return driver = new ChromeDriver(optionC);
-        }
-    }
     static void setupBrowser(String baseURL) {
 
         optionE = new EdgeOptions();
@@ -58,6 +48,7 @@ public class BaseTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().minimize();
         driver.get(baseURL);
+        }
     }
 
     @AfterMethod
