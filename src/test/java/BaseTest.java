@@ -4,6 +4,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterMethod;
@@ -14,7 +16,7 @@ import org.testng.annotations.Parameters;
 import java.time.Duration;
 
 public class BaseTest {
-    public static WebDriver driver = null;
+    public static WebDriver driver = pickBrowser(System.getProperty("browser"));
     public static ChromeOptions optionC;
     static WebDriverWait wait;
 
@@ -26,18 +28,35 @@ public class BaseTest {
     @BeforeMethod
     @Parameters({"baseURL"})
     static void setupBrowser(String baseURL) {
-        optionC = new ChromeOptions();
-        optionC.addArguments("--disable-notifications", "--remote-allow-origins=*", "--incognito", "--start-maximized");
-        driver = new ChromeDriver(optionC);
-        wait = new WebDriverWait(driver, Duration.ofSeconds(4));
+//        optionC = new ChromeOptions();
+//        optionC.addArguments("--disable-notifications", "--remote-allow-origins=*", "--incognito", "--start-maximized");
+//
+        driver = pickBrowser(System.getProperty("browser"));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().minimize();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(4));
         driver.get(baseURL);
     }
 
     @AfterMethod
     public static void tearDownBrowser() {
         driver.quit();
+    }
+
+    public static WebDriver pickBrowser(String "browser"){
+        switch (browser){
+            case "Edge":
+                WebDriverManager.edgedriver().setup();
+                return driver = new EdgeDriver();
+            case "Firefox":
+                WebDriverManager.firefoxdriver().setup();
+                return driver = new FirefoxDriver();
+            default:
+                ChromeOptions optionC = new ChromeOptions();
+                optionC.addArguments("--disable-notifications", "--remote-allow-origins=*", "--incognito", "--start-maximized");
+                return driver = new ChromeDriver(optionC);
+
+        }
     }
 
     public static void logIn(String email, String password) {
