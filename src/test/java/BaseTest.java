@@ -2,7 +2,6 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -13,12 +12,12 @@ import java.net.MalformedURLException;
 import java.time.Duration;
 
 public class BaseTest {
-   public static WebDriver driver;
+   public static WebDriver driver = null;
     public static ChromeOptions optionC;
-    static String url;
+    static String url = null;
     static WebDriverWait wait;
     static Actions actions;
-    public static ThreadLocal<WebDriver> threadDriver;
+    private static final ThreadLocal<WebDriver> threadDriver = new ThreadLocal<>();
     @BeforeSuite
     static void setupClass() {
         WebDriverManager.chromedriver().setup();
@@ -31,7 +30,6 @@ public class BaseTest {
     static void launchBrowser(@Optional String baseURL) throws MalformedURLException {
         baseURL="https://bbb.testpro.io/";
         driver = pickBrowser(System.getProperty("browser"));
-        threadDriver = new ThreadLocal<>();
         threadDriver.set(driver);
 
         actions = new Actions(getDriver());
@@ -50,15 +48,19 @@ public class BaseTest {
 //        driver.get(baseURL);
     }
 
+    private static WebDriver pickBrowser(String browser) {
+        return null;
+    }
+
     public static WebDriver getDriver() {
         return threadDriver.get();
     }
 
-    @AfterMethod
-    public static void tearDownBrowser() {
-        getDriver().quit();
-        threadDriver.remove();
-    }
+   @AfterMethod
+   public static void tearDownBrowser() {
+        threadDriver.get().close();
+    threadDriver.remove();
+   }
 
     public static void logIn(String email, String password) {
         WebElement emailField = driver.findElement(By.cssSelector("input[type='email']"));
